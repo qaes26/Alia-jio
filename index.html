@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هاتف عليا - طالبة القانون المميزة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { animation: { 'spin-slow': 'spin 4s linear infinite' } } } }
+    </script>
+    <style>
+        :root { --gold: #c9a24b; --gold-light: #e8cf8f; --navy: #0b1426; --navy2: #14233f; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #050a15, #0b1426, #1a2a4a);
+            margin: 0; height: 100vh;
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+        .phone {
+            width: 340px; height: 700px; background: #111; border-radius: 45px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7), 0 0 0 10px #1a1a24, 0 0 0 12px rgba(201,162,75,0.5);
+            position: relative; overflow: hidden; transform: scale(0.95);
+        }
+        .screen {
+            width: 100%; height: 100%; position: absolute; top: 0; left: 0;
+            background:
+                radial-gradient(circle at 50% 18%, rgba(201,162,75,0.28), transparent 55%),
+                repeating-linear-gradient(90deg, rgba(201,162,75,0.05) 0 2px, transparent 2px 46px),
+                linear-gradient(to bottom, #0b1426 0%, #14233f 60%, #1f1a2e 100%);
+            overflow: hidden; transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .watermark {
+            position: absolute; top: 46%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 190px; opacity: 0.07; z-index: 1; pointer-events: none; user-select: none;
+        }
+        .sparkle {
+            position: absolute; bottom: -20px; color: rgba(232,207,143,0.8);
+            animation: floatUp 8s infinite ease-in; z-index: 2; pointer-events: none; user-select: none;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.9; } 80% { opacity: 0.9; }
+            100% { transform: translateY(-700px) scale(1.2); opacity: 0; }
+        }
+        .glass-panel {
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(201,162,75,0.45);
+        }
+        .gold-text { color: var(--gold-light); }
+        .app-btn { transition: all 0.2s cubic-bezier(0.4,0,0.2,1); }
+        .app-btn:active { transform: scale(0.85); filter: brightness(0.8); }
+        .app-icon {
+            width: 56px; height: 56px; border-radius: 16px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; font-size: 26px; color: #fff;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.35); border: 1px solid rgba(232,207,143,0.35);
+        }
+        @keyframes bounce-up { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-bounce-up { animation: bounce-up 2s infinite; }
+        #lock-screen { z-index: 10; }
+        #home-screen { z-index: 5; opacity: 0; pointer-events: none; }
+        #app-view { z-index: 20; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); background: #fbf8f1; }
+        .app-open { transform: translateY(0) !important; }
+        .hide-screen { opacity: 0; pointer-events: none; transform: scale(1.05); }
+        .show-screen { opacity: 1 !important; pointer-events: auto !important; transform: scale(1) !important; }
+        .notch {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 25px; background: #111;
+            border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; z-index: 50;
+        }
+        .app-header { background: linear-gradient(to left, #0b1426, #14233f); border-bottom: 2px solid var(--gold); }
+        .paper {
+            background: #fffdf8; border: 1px solid #e6d9b8; border-top: 4px solid var(--gold);
+            border-radius: 14px; padding: 22px 18px; box-shadow: 0 8px 20px rgba(11,20,38,0.12); width: 100%;
+        }
+        .seal {
+            width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 32px; margin: 0 auto 16px; background: radial-gradient(circle, #f3e2ad, #c9a24b);
+            box-shadow: 0 4px 12px rgba(201,162,75,0.5);
+        }
+        .disc {
+            width: 160px; height: 160px; border-radius: 50%; margin-bottom: 24px; font-size: 64px;
+            display: flex; align-items: center; justify-content: center; border: 4px solid #e8cf8f;
+            background: repeating-radial-gradient(circle, #0b1426 0 6px, #14233f 6px 12px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone">
+        <div class="notch"></div>
+
+        <!-- Lock Screen -->
+        <div id="lock-screen" class="screen flex flex-col items-center pt-24 pb-8">
+            <div class="watermark">⚖️</div>
+            <div id="sparkles-container"></div>
+
+            <div class="relative z-10 text-white text-center w-full px-6 flex flex-col h-full">
+                <div class="mt-4">
+                    <div class="text-sm font-medium tracking-wider mb-2 gold-text" id="date-display"></div>
+                    <div class="flex justify-center items-end gap-1">
+                        <div class="text-7xl font-bold tracking-tight" id="time-display" style="text-shadow: 0 4px 20px rgba(0,0,0,0.5);">12:47</div>
+                        <div class="text-2xl font-bold mb-2 gold-text" id="ampm-display">ص</div>
+                    </div>
+                </div>
+
+                <div class="mt-8 w-full">
+                    <div class="glass-panel rounded-2xl p-4 text-right flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style="background: linear-gradient(135deg,#e8cf8f,#c9a24b);">⚖️</div>
+                        <div>
+                            <div class="font-bold text-sm">مذكرة شكر وتقدير</div>
+                            <div class="text-xs opacity-80">عليا، لديكِ رسائل جميلة وأغنية راقية...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto flex flex-col items-center">
+                    <button id="unlock-btn" class="mb-8 flex flex-col items-center text-white/80 animate-bounce-up cursor-pointer p-4">
+                        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                        <span class="text-sm tracking-wide">اسحبي لفتح الملف يا عليا ⚖️</span>
+                    </button>
+                    <div class="text-[10px] text-white/50 font-medium">إعداد قيس جازي</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home Screen -->
+        <div id="home-screen" class="screen">
+            <div class="watermark">🏛️</div>
+            <div class="relative z-10 w-full h-full pt-10 pb-6 px-5 flex flex-col">
+                <div class="flex justify-between items-center text-white text-xs mb-8 px-2 font-medium">
+                    <span id="status-time">12:47</span>
+                    <span class="gold-text">⚖️ مكتب المحامية عليا</span>
+                </div>
+
+                <div id="apps-grid" class="grid grid-cols-4 gap-y-6 gap-x-4"></div>
+
+                <div class="mt-auto mb-2 w-full">
+                    <div id="dock" class="glass-panel rounded-3xl p-3 flex justify-around items-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App View -->
+        <div id="app-view" class="screen text-gray-800 flex flex-col">
+            <div class="app-header pt-12 pb-4 px-4 flex items-center gap-3 relative z-10 shadow-sm">
+                <button onclick="closeApp()" class="flex items-center text-sm font-medium transition" style="color:#e8cf8f;">
+                    <svg class="w-5 h-5 mr-1 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    الرجوع
+                </button>
+                <div class="font-bold text-lg flex-1 text-center pr-8 text-white" id="app-title">التطبيق</div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-5 relative">
+                <div id="app-content" class="relative z-10 text-center flex flex-col items-center justify-center min-h-[60%] mt-4"></div>
+            </div>
+
+            <div class="w-full h-8 flex justify-center items-center bg-transparent absolute bottom-0 z-50 cursor-pointer" onclick="closeApp()">
+                <div class="w-1/3 h-1 bg-gray-300 rounded-full"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- مشغل الأغنية: الملف song.mp3 في نفس مجلد index.html ---
+        const songAudio = new Audio('song.mp3');
+        songAudio.loop = true;
+        songAudio.preload = 'auto';
+        let isPlaying = false;
+
+        window.toggleMusic = function() {
+            if (isPlaying) {
+                songAudio.pause();
+                isPlaying = false;
+                updateMusicUI();
+            } else {
+                songAudio.play().then(() => {
+                    isPlaying = true;
+                    updateMusicUI();
+                }).catch(e => {
+                    console.log("تعذر تشغيل الأغنية:", e);
+                    isPlaying = false;
+                    updateMusicUI();
+                    alert("تأكد من وجود ملف 'song.mp3' في نفس المجلد مع index.html على GitHub.");
+                });
+            }
+        };
+
+        window.updateMusicUI = function() {
+            const playIcon = document.getElementById('music-play-icon');
+            const disc = document.getElementById('music-record-player');
+            if (playIcon) {
+                playIcon.innerHTML = isPlaying
+                    ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'
+                    : '<path d="M8 5v14l11-7z"/>';
+            }
+            if (disc) disc.classList.toggle('animate-spin-slow', isPlaying);
+        };
+
+        // --- التطبيقات على الشاشة الرئيسية ---
+        const homeApps = [
+            { id: 'messages', label: 'الرسائل',  emoji: '✉️', bg: 'linear-gradient(135deg,#1f3a6b,#0b1426)' },
+            { id: 'library',  label: 'المكتبة',  emoji: '📚', bg: 'linear-gradient(135deg,#7a4b2a,#3d2412)' },
+            { id: 'music',    label: 'الموسيقى', emoji: '🎵', bg: 'linear-gradient(135deg,#8a1c2b,#4a0d16)' },
+            { id: 'court',    label: 'المحكمة',  emoji: '🏛️', bg: 'linear-gradient(135deg,#4b5563,#1f2937)' },
+            { id: 'verdicts', label: 'الأحكام',  emoji: '📜', bg: 'linear-gradient(135deg,#c9a24b,#8a6a1f)' },
+            { id: 'notes',    label: 'المذكرات', emoji: '📝', bg: 'linear-gradient(135deg,#2f6b57,#133a2d)' },
+            { id: 'calendar', label: 'الجلسات',  emoji: '', bg: 'linear-gradient(135deg,#a32638,#5c0f1b)' },
+            { id: 'about',    label: 'حول',      emoji: '⚙️', bg: 'linear-gradient(135deg,#4b5563,#111827)' }
+        ];
+        const dockApps = [
+            { id: 'phone',  emoji: '📞', bg: 'linear-gradient(135deg,#2f6b57,#133a2d)' },
+            { id: 'scales', emoji: '⚖️', bg: 'linear-gradient(135deg,#1f3a6b,#0b1426)' },
+            { id: 'star',   emoji: '🌟', bg: 'linear-gradient(135deg,#e8cf8f,#c9a24b)' }
+        ];
+
+        const grid = document.getElementById('apps-grid');
+        homeApps.forEach(a => {
+            const inner = a.id === 'calendar'
+                ? `<span class="text-[10px] font-bold mt-1" id="cal-month">نوفمبر</span><span class="text-xl font-bold leading-none" id="cal-day">19</span>`
+                : a.emoji;
+            grid.insertAdjacentHTML('beforeend', `
+                <button class="app-btn flex flex-col items-center gap-1" onclick="openApp('${a.id}')">
+                    <div class="app-icon" style="background:${a.bg}">${inner}</div>
+                    <span class="text-white text-xs font-medium">${a.label}</span>
+                </button>`);
+        });
+        const dock = document.getElementById('dock');
+        dockApps.forEach(a => {
+            dock.insertAdjacentHTML('beforeend', `
+                <button class="app-btn app-icon" style="width:48px;height:48px;font-size:22px;background:${a.bg}" onclick="openApp('${a.id}')">${a.emoji}</button>`);
+        });
+
+        // --- المحتوى ---
+        const page = (seal, title, text, extra = '') => `
+            <div class="paper">
+                <div class="seal">${seal}</div>
+                <h2 class="text-2xl font-bold mb-4" style="color:#0b1426;">${title}</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">${text}</p>
+                ${extra}
+            </div>`;
+
+        const appsData = {
+            messages: { title: "الرسائل", html: page('✉️', 'إلى المحامية عليا ⚖️',
+                'بعض الأشخاص يجمعون بين الذكاء والرقي، وعليا واحدة منهم؛ حجتها قوية، وحضورها هادئ، وتميّزها يسبق اسمها. ستبقين بحق طالبة القانون المميزة.') },
+            library: { title: "المكتبة القانونية", html: page('📚', 'مكتبة التميّز 📚',
+                'في كل كتاب قانون تفتحينه، وفي كل مادة تتقنينها، يزداد يقيننا أن مستقبلكِ في ساحات القانون سيكون مشرقاً ومشرّفاً يا عليا.') },
+            music: { title: "الموسيقى", html: `
+                <div class="flex flex-col items-center w-full">
+                    <div id="music-record-player" class="disc">⚖️</div>
+                    <h2 class="text-2xl font-bold mb-2" style="color:#0b1426;">آه يا حلو</h2>
+                    <p class="text-sm font-bold mb-6" style="color:#a32638;">إهداء راقٍ إلى عليا</p>
+                    <button onclick="toggleMusic()" class="text-white p-5 rounded-full shadow-lg transition-all transform hover:scale-105 mb-6" style="background:linear-gradient(135deg,#c9a24b,#8a6a1f);">
+                        <svg id="music-play-icon" class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"></svg>
+                    </button>
+                    <p class="mt-2 text-sm text-gray-600 leading-relaxed italic border-t border-yellow-200 pt-6">"الألحان الجميلة والكلمات اللطيفة تليق دائماً بأصحاب الذوق الرفيع والحضور المميز مثل عليا."</p>
+                </div>` },
+            court: { title: "قاعة المحكمة", html: page('🏛️', 'هيئة المحكمة 🏛️',
+                'بعد الاطلاع على الأوراق وسماع الشهود، وبإجماع الحاضرين، تقرر المحكمة أن عليا من أرقى وأذكى طالبات القانون، وأن حضورها يزيّن أي قاعة تدخلها.') },
+            verdicts: { title: "الأحكام", html: page('📜', 'منطوق الحكم 📜',
+                '<b>حكمت المحكمة حضورياً:</b> بثبوت التميّز والرقي والذكاء لعليا، وبأنها صاحبة الحجة الأقوى والحضور الأجمل. حكم غير قابل للطعن.') },
+            notes: { title: "المذكرات", html: page('📝', 'مذكرة دفاع 📝',
+                'الدفع الأول: الجمال الحقيقي يجمع بين العقل والأناقة وحسن الخلق. الدفع الثاني: عليا تجمعها كلها. النتيجة: لا مجال للمنازعة في تميّزها.') },
+            calendar: { title: "جدول الجلسات", html: page('📅', 'جلسات النجاح 📅',
+                'كل التمنيات بأن تكون جلساتكِ وامتحاناتكِ وأيامكِ كلها مليئة بالنجاح والتفوق واللحظات السعيدة التي تليق بكِ يا عليا.') },
+            phone: { title: "الاتصال", html: page('📞', 'رسالة تقدير 📞',
+                'كل الاحترام والتقدير لصاحبة العقل الراجح والحضور الراقي، طالبة القانون المميزة عليا.') },
+            scales: { title: "الميزان", html: page('⚖️', 'كفة التميّز ⚖️',
+                'وُضع الذكاء في كفة، والرقي والأناقة في الكفة الأخرى، فاستوى الميزان عند اسم واحد: عليا.') },
+            star: { title: "الحكم النهائي", html: page('🌟', 'طالبة القانون المميزة 🌟',
+                'حضور استثنائي، وعقل لامع، وذوق رفيع.. دمتِ متألقة دائماً يا عليا، ومبروك مقدماً على مستقبلكِ في القانون.') },
+            about: { title: "حول النظام", html: page('⚙️', 'معلومات النظام ⚙️',
+                'تم تصميم هذا النظام كإهداء لطيف يليق بطالبة القانون المميزة عليا.',
+                `<div class="mt-6 p-4 rounded-xl text-sm font-bold" style="background:#f4ecd6;color:#6b5a2a;">تم التطوير والإعداد من قِبل:<br><span class="text-lg" style="color:#0b1426;">قيس جازي</span></div>`) }
+        };
+
+        // --- الساعة والتاريخ ---
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'م' : 'ص';
+            hours = hours % 12 || 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            const t = `${hours}:${minutes}`;
+            document.getElementById('time-display').innerText = t;
+            document.getElementById('status-time').innerText = t;
+            document.getElementById('ampm-display').innerText = ampm;
+
+            const days = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+            const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+            const ar = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+            const conv = n => String(n).split('').map(c => ar[c] || c).join('');
+            const monthName = months[now.getMonth()];
+            document.getElementById('date-display').innerText = `${days[now.getDay()]}، ${conv(now.getDate())} ${monthName}`;
+            document.getElementById('cal-month').innerText = monthName;
+            document.getElementById('cal-day').innerText = now.getDate();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // --- التفاعل ---
+        const lockScreen = document.getElementById('lock-screen');
+        const homeScreen = document.getElementById('home-screen');
+        const appView = document.getElementById('app-view');
+
+        function unlockPhone() {
+            lockScreen.classList.add('hide-screen');
+            setTimeout(() => homeScreen.classList.add('show-screen'), 200);
+        }
+        document.getElementById('unlock-btn').addEventListener('click', unlockPhone);
+
+        let startY = 0;
+        lockScreen.addEventListener('touchstart', e => { startY = e.changedTouches[0].screenY; });
+        lockScreen.addEventListener('touchend', e => {
+            if (startY - e.changedTouches[0].screenY > 50) unlockPhone();
+        });
+
+        window.openApp = function(appId) {
+            const data = appsData[appId];
+            if (!data) return;
+            document.getElementById('app-title').innerText = data.title;
+            document.getElementById('app-content').innerHTML = data.html;
+            appView.classList.add('app-open');
+            if (appId === 'music') updateMusicUI();
+        };
+        window.closeApp = function() { appView.classList.remove('app-open'); };
+
+        function createSparkles() {
+            const container = document.getElementById('sparkles-container');
+            const icons = ['⚖️', '✨', '📜'];
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'sparkle';
+                    item.innerText = icons[Math.floor(Math.random() * icons.length)];
+                    item.style.left = Math.random() * 90 + 5 + '%';
+                    item.style.fontSize = (Math.random() * 10 + 12) + 'px';
+                    item.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                    container.appendChild(item);
+                    setTimeout(() => item.remove(), 10000);
+                }, i * 900);
+            }
+        }
+        createSparkles();
+        setInterval(createSparkles, 10000);
+    </script>
+</body>
+</html>
